@@ -6,15 +6,15 @@
 char const* TITLE = "SDL";
 int const WIDTH = 500;
 int const HEIGHT = 500;
-int const POINTS = 2;
-int const ITERATIONS = WIDTH / 10;
+int const POINTS = 6;
+int const ITERATIONS = WIDTH / (POINTS * 5);
 
 struct Point
 {
     Point(double x, double y)
     {
-        this->x = x / (POINTS - 1) * WIDTH;
-        this->y = (0.5 - y / (POINTS - 1)) * HEIGHT;
+        this->x = static_cast<int>(x / (POINTS - 1) * WIDTH);
+        this->y = static_cast<int>((0.5 - y / (POINTS - 1)) * HEIGHT);
     }
 
     int x;
@@ -53,50 +53,28 @@ int main(int argc, char **argv)
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-    SDL_RenderDrawLine(renderer, 0, HEIGHT / 2, WIDTH, HEIGHT / 2);
-    //SDL_RenderDrawLine(renderer, WIDTH / 2, 0, WIDTH / 2, HEIGHT);
     SDL_RenderPresent(renderer);
     SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
 
-    std::vector<double> angles = { 1, 1 };
-    //std::srand(std::time(0));
+    std::vector<double> angles;
+    std::srand(static_cast<unsigned int>(std::time(0)));
 
-    //for (int i = 0; i < POINTS; i++) {
-    //    double angle = static_cast<double>(std::rand()) / RAND_MAX * 2 - 1;
-    //    angles.push_back(angle);
-    //}
-    {
-        Point p0(0, 0);
-
-        for (int i = 0; i < POINTS - 1; i++) {
-            for (int l = 1; l < ITERATIONS + 1; l++) {
-                double x = static_cast<double>(l) / ITERATIONS;
-                //double y = interpolate(angles[i], angles[i + 1], smoothstep(x) * x);
-                double a = 1;
-                double b = 1;
-                double y = 2 * (a - b) * x * x * x * x - (3 * a - 5 * b) * x * x * x - 3 * b * x * x + a * x;
-                Point p1(x + i, y);
-                SDL_RenderDrawLine(renderer, p0.x, p0.y, p1.x, p1.y);
-                p0 = p1;
-            }
-        }
+    for (int i = 0; i < POINTS; i++) {
+        double angle = static_cast<double>(std::rand()) / RAND_MAX * 2 - 1;
+        angles.push_back(angle);
     }
 
-    //SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
-    //{
-    //    Point p0(0, 0);
+    Point p0(0, 0);
 
-    //    for (int i = 0; i < POINTS - 1; i++) {
-    //        for (int l = 1; l < ITERATIONS + 1; l++) {
-    //            double x = static_cast<double>(l) / ITERATIONS;
-    //            double y = interpolate(angles[i], angles[i + 1], smoothstep(x));
-    //            Point p1(x + i, y);
-    //            SDL_RenderDrawLine(renderer, p0.x, p0.y, p1.x, p1.y);
-    //            p0 = p1;
-    //        }
-    //    }
-    //}
+    for (int i = 0; i < POINTS - 1; i++) {
+        for (int l = 1; l < ITERATIONS + 1; l++) {
+            double x = static_cast<double>(l) / ITERATIONS;
+            double y = noise(angles[i], angles[i + 1], x);
+            Point p1(x + i, y);
+            SDL_RenderDrawLine(renderer, p0.x, p0.y, p1.x, p1.y);
+            p0 = p1;
+        }
+    }
 
     SDL_RenderPresent(renderer);
     
