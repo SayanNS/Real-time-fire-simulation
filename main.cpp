@@ -69,7 +69,7 @@ int main(int argc, char **argv)
     for (int i = 0; i < POINTS - 1; i++) {
         for (int l = 1; l < ITERATIONS + 1; l++) {
             double x = static_cast<double>(l) / ITERATIONS;
-            double y = noise(angles[i], angles[i + 1], x);
+            double y = interpolate(noise(angles[i], angles[i + 1], x), smoothstep(x));
             Point p1(x + i, y);
             SDL_RenderDrawLine(renderer, p0.x, p0.y, p1.x, p1.y);
             p0 = p1;
