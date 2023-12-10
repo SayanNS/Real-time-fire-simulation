@@ -1,7 +1,7 @@
 ﻿#include <iostream>
-#include <SDL.h>
 #include <vector>
 #include "noise.h"
+#include <SDL.h>
 
 char const* TITLE = "SDL";
 int const WIDTH = 500;
@@ -22,7 +22,7 @@ struct Point
 };
 
 
-int main(int argc, char **argv)
+int main(int argc, char *args[])
 {
     SDL_Window* window;
     SDL_Renderer* renderer;
